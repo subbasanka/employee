@@ -2,9 +2,11 @@ package com.demo.employee.configuration;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import oracle.jdbc.pool.OracleDataSource;
 import oracle.ucp.jdbc.PoolDataSource;
 import oracle.ucp.jdbc.PoolDataSourceFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,7 @@ import java.sql.SQLException;
 @ConfigurationProperties("spring.datasource")
 @EnableConfigurationProperties
 @EnableJpaAuditing
+@Slf4j
 public class OracleConfiguration {
     private String username;
     private String password;
@@ -33,7 +36,16 @@ public class OracleConfiguration {
 
     @Bean
     @Primary
-    public DataSource dataSource() throws SQLException {
+    public DataSource dataSource(Environment environment) throws SQLException {
+        log.info("In datasource config method");
+        String password = environment.getProperty(username);
+        if(StringUtils.isBlank(password))
+        {
+            log.info("password is empty");
+        }
+        else {
+            log.info("Retrieved DB credentials for user {}",username);
+        }
         PoolDataSource dataSource = PoolDataSourceFactory.getPoolDataSource();
         dataSource.setConnectionFactoryClassName("oracle.jdbc.pool.OracleDataSource");
         dataSource.setUser(username);

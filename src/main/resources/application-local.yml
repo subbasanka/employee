@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: employee-application
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: employee
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle12cDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle10gDialect
+        format_sql: true
+    show-sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/subbasanka/config-server
